@@ -1,6 +1,10 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "superpowers-t",
   "description": "Agent Teams addon for Superpowers",
+  "owner": {
+    "name": "Kenny Pee"
+  },
   "plugins": [
     {
       "name": "superpowers-t",
