@@ -52,7 +52,6 @@ digraph when_to_use {
 digraph process {
     rankdir=TB;
     "Identify independent domains" [shape=box];
-    "Enable delegate mode (Shift+Tab)" [shape=box];
     "Spawn one teammate per domain" [shape=box];
     "Teammates work in parallel" [shape=box];
     "Cross-communication if overlaps found" [shape=box];
@@ -62,8 +61,7 @@ digraph process {
     "Run full test suite" [shape=box];
     "Resolve conflicts if any" [shape=box];
 
-    "Identify independent domains" -> "Enable delegate mode (Shift+Tab)";
-    "Enable delegate mode (Shift+Tab)" -> "Spawn one teammate per domain";
+    "Identify independent domains" -> "Spawn one teammate per domain";
     "Spawn one teammate per domain" -> "Teammates work in parallel";
     "Teammates work in parallel" -> "Cross-communication if overlaps found";
     "Cross-communication if overlaps found" -> "All teammates report completion";
@@ -84,11 +82,7 @@ Group failures by what's broken:
 
 Each domain is independent - fixing one doesn't affect the others.
 
-### 2. Enable Delegate Mode
-
-Lead activates delegate mode (Shift+Tab). Lead coordinates and synthesizes but does NOT implement.
-
-### 3. Spawn Teammates
+### 2. Spawn Teammates
 
 One teammate per domain. Each spawn prompt includes:
 - **Specific scope:** One test file or subsystem
@@ -97,7 +91,7 @@ One teammate per domain. Each spawn prompt includes:
 - **Communication protocol:** Message Lead with results. Message other teammates ONLY if you discover something that affects their domain.
 - **Expected output:** Summary of root cause, changes made, cross-domain findings
 
-### 4. Teammates Work in Parallel
+### 3. Teammates Work in Parallel
 
 All teammates work concurrently. The key difference from ephemeral agents:
 
@@ -109,7 +103,7 @@ Example:
 - Teammate A messages Teammate B: "Found timing bug in events.ts:42 - check if this affects your batch completion investigation"
 - Teammate B can adjust their approach immediately instead of rediscovering independently
 
-### 5. Lead Synthesizes Results
+### 4. Lead Synthesizes Results
 
 When all teammates report completion:
 1. Read each summary
@@ -153,8 +147,6 @@ Lead identifies 3 independent domains:
 - batch-completion-behavior.test.ts: 2 failures (tools not executing)
 - tool-approval-race-conditions.test.ts: 1 failure (execution count = 0)
 
-Lead enables delegate mode (Shift+Tab)
-
 Lead spawns 3 teammates:
   Teammate "abort-fixer" -> Fix agent-tool-abort.test.ts
   Teammate "batch-fixer" -> Fix batch-completion-behavior.test.ts
@@ -187,7 +179,7 @@ Lead: All fixes independent at file level, no conflicts. Full suite green.
 **Correct:** Explicit instruction to message other teammates when finding overlaps
 
 **Lead implements instead of coordinating:** Defeats delegation purpose
-**Correct:** Lead stays in delegate mode, only synthesizes
+**Correct:** Lead coordinates only, teammates implement
 
 **No conflict check after parallel work:** Teammates may edit adjacent code
 **Correct:** Lead runs `git diff --stat` to verify no conflicts
@@ -200,16 +192,12 @@ Lead: All fixes independent at file level, no conflicts. Full suite green.
 **Never:**
 - Spawn teammates for related problems (investigate together first)
 - Skip conflict verification after parallel work
-- Let Lead implement directly (delegate mode)
+- Let Lead implement directly (Lead coordinates only, teammates implement)
 - Ignore cross-domain findings from teammates
 - Proceed without running full test suite after integration
 - Spawn teammates that would edit the same files
 
-## Integration
+## Principles
 
-**Pairs with:**
-- **superpowers:systematic-debugging** - Each teammate can use this for their domain
-- **superpowers:verification-before-completion** - Each teammate verifies before reporting
-
-**Ephemeral alternative:**
-- **superpowers:dispatching-parallel-agents** - Use when Agent Teams is not enabled or problems definitely don't overlap
+- **Verify before reporting:** Each teammate should run tests and confirm their fix works before messaging Lead
+- **Systematic debugging:** Teammates should trace root causes, not just patch symptoms

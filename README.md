@@ -1,27 +1,39 @@
-# Superpowers-T (Agent Teams)
+# Superpowers-T
 
-Agent Teams addon for [Superpowers](https://github.com/obra/superpowers). Adds 3 skills that adapt subagent workflows to use Claude Code's experimental Agent Teams feature — persistent teammates with independent context windows, cross-communication, and delegate mode.
+A standalone skills library for Claude Code with Agent Teams support. Forked from [obra/superpowers](https://github.com/obra/superpowers).
+
+Includes all core superpowers skills (TDD, debugging, code review, planning, etc.) plus 3 Agent Teams skills for persistent teammate orchestration.
+
+## Agent Teams Skills
 
 **Requires:** `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
-**Companion to:** The original [superpowers](https://github.com/obra/superpowers) plugin (install both).
+- **agent-team-driven-development** — Persistent implementer + two-stage review team with accumulated context across tasks
+- **dispatching-agent-teams** — Parallel teammates with cross-communication for overlapping concerns
+- **agent-team-code-review** — Persistent reviewer teammate that retains context across reviews
 
-## Skills
+## Core Skills (from superpowers)
 
-- **agent-team-driven-development** — Persistent implementer + two-stage review team with accumulated context across tasks. Alternative to `subagent-driven-development`.
-- **dispatching-agent-teams** — Parallel teammates with cross-communication for overlapping concerns. Alternative to `dispatching-parallel-agents`.
-- **agent-team-code-review** — Persistent reviewer teammate that retains context across reviews. Alternative to `requesting-code-review`.
+- **brainstorming** — Explore ideas and design before implementation
+- **writing-plans** — Create detailed implementation plans
+- **executing-plans** — Execute plans in parallel sessions with checkpoints
+- **subagent-driven-development** — Fresh subagent per task with two-stage review
+- **dispatching-parallel-agents** — Parallel subagents for independent problems
+- **requesting-code-review** / **receiving-code-review** — Code review workflows
+- **test-driven-development** — TDD discipline (RED-GREEN-REFACTOR)
+- **systematic-debugging** — Root cause analysis before fixes
+- **using-git-worktrees** — Isolated workspaces for feature work
+- **verification-before-completion** — Evidence before claims
+- **finishing-a-development-branch** — Merge, PR, or cleanup options
+- **writing-skills** — Create and edit skills
 
 ## Installation
 
-### Local Install
-
 ```bash
-# In Claude Code, install from local path:
-/plugin install /path/to/superpowers-agent-teams
+/plugin install strawhatduckk/superpowers-agent-teams
 ```
 
-### Enable Agent Teams
+### Enable Agent Teams (optional)
 
 Add to your settings.json or set as environment variable:
 
@@ -32,20 +44,6 @@ Add to your settings.json or set as environment variable:
   }
 }
 ```
-
-## How It Works
-
-These skills replace ephemeral Task tool subagents with persistent Agent Teams teammates:
-
-| Aspect | Superpowers (subagents) | Superpowers-T (Agent Teams) |
-|--------|------------------------|-----------------------------|
-| Lifecycle | Fresh per task | Persistent across all tasks |
-| Context | Clean slate each time | Accumulated understanding |
-| Communication | Dispatch/return | Bidirectional messaging |
-| Lead role | Active controller | Delegate mode coordinator |
-| Review quality | No prior context | Remembers earlier patterns |
-
-The core principles from superpowers are preserved: two-stage review (spec first, then quality), TDD, evidence before claims, YAGNI.
 
 ## License
 

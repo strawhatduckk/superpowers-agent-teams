@@ -5,7 +5,7 @@ description: Use when executing implementation plans with independent tasks usin
 
 # Agent-Team-Driven Development
 
-Execute plan by coordinating persistent Agent Teams teammates: implementer accumulates codebase understanding across tasks, reviewers retain memory of patterns. Lead coordinates in delegate mode.
+Execute plan by coordinating persistent Agent Teams teammates: implementer accumulates codebase understanding across tasks, reviewers retain memory of patterns. Lead coordinates only — all implementation goes through teammates.
 
 **Core principle:** Persistent teammates + accumulated context + two-stage review (spec then quality) = higher quality than ephemeral subagents
 
@@ -51,7 +51,6 @@ digraph process {
 
     subgraph cluster_setup {
         label="Phase 0: Team Setup";
-        "Lead enables delegate mode (Shift+Tab)" [shape=box];
         "Spawn implementer (./implementer-spawn-prompt.md)" [shape=box];
         "Spawn spec-reviewer (./spec-reviewer-spawn-prompt.md)" [shape=box];
         "Spawn code-quality-reviewer (./code-quality-reviewer-spawn-prompt.md)" [shape=box];
@@ -76,9 +75,8 @@ digraph process {
 
     "More tasks?" [shape=diamond];
     "Send full scope to code-quality-reviewer for holistic review" [shape=box];
-    "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
+    "Finish development branch (merge, PR, or cleanup)" [shape=box style=filled fillcolor=lightgreen];
 
-    "Lead enables delegate mode (Shift+Tab)" -> "Spawn implementer (./implementer-spawn-prompt.md)";
     "Spawn implementer (./implementer-spawn-prompt.md)" -> "Spawn spec-reviewer (./spec-reviewer-spawn-prompt.md)";
     "Spawn spec-reviewer (./spec-reviewer-spawn-prompt.md)" -> "Spawn code-quality-reviewer (./code-quality-reviewer-spawn-prompt.md)";
     "Spawn code-quality-reviewer (./code-quality-reviewer-spawn-prompt.md)" -> "Read plan, extract all tasks, create tasks via TaskCreate";
@@ -104,7 +102,7 @@ digraph process {
     "Mark task complete via TaskUpdate" -> "More tasks?";
     "More tasks?" -> "Send task details to implementer" [label="yes"];
     "More tasks?" -> "Send full scope to code-quality-reviewer for holistic review" [label="no"];
-    "Send full scope to code-quality-reviewer for holistic review" -> "Use superpowers:finishing-a-development-branch";
+    "Send full scope to code-quality-reviewer for holistic review" -> "Finish development branch (merge, PR, or cleanup)";
 }
 ```
 
@@ -114,9 +112,9 @@ digraph process {
 - `./spec-reviewer-spawn-prompt.md` - Spawn the spec compliance reviewer teammate
 - `./code-quality-reviewer-spawn-prompt.md` - Spawn the code quality reviewer teammate
 
-## Delegate Mode
+## Lead Role: Coordinate Only
 
-**CRITICAL:** Lead MUST use delegate mode (Shift+Tab). Lead coordinates and communicates but does NOT implement. All implementation is done by the implementer teammate.
+**CRITICAL:** Lead coordinates and communicates but does NOT implement. All implementation is done by the implementer teammate.
 
 Why: Prevents context pollution in Lead. Lead stays focused on coordination. The implementer accumulates implementation context intentionally while Lead stays clean for orchestration.
 
@@ -128,7 +126,7 @@ Why: Prevents context pollution in Lead. Lead stays focused on coordination. The
 | Context | Clean slate each time | Accumulated understanding |
 | Communication | Dispatch/return | Bidirectional messaging |
 | Task tracking | TodoWrite | TaskCreate/TaskUpdate |
-| Lead role | Active controller | Delegate mode coordinator |
+| Lead role | Active controller | Coordinator only |
 | Review quality | No prior context | Remembers earlier patterns |
 | Cost | Per-invocation | 3 persistent context windows |
 
@@ -137,7 +135,6 @@ Why: Prevents context pollution in Lead. Lead stays focused on coordination. The
 ```
 Lead: I'm using Agent-Team-Driven Development to execute this plan.
 
-[Enable delegate mode (Shift+Tab)]
 [Spawn implementer teammate with ./implementer-spawn-prompt.md]
 [Spawn spec-reviewer teammate with ./spec-reviewer-spawn-prompt.md]
 [Spawn code-quality-reviewer teammate with ./code-quality-reviewer-spawn-prompt.md]
@@ -209,7 +206,7 @@ Code-quality-reviewer:
   "Cross-task review: Consistent patterns throughout. All requirements met.
    Ready to merge."
 
-Lead: Use superpowers:finishing-a-development-branch
+Lead: All tasks complete. Ready to merge/PR.
 ```
 
 ## Advantages
@@ -217,7 +214,7 @@ Lead: Use superpowers:finishing-a-development-branch
 **vs. Manual execution:**
 - Persistent implementer learns the codebase progressively
 - Two-stage review catches issues systematically
-- Delegate mode keeps Lead context clean for coordination
+- Coordination-only Lead keeps context clean
 
 **vs. Subagent-driven-development (ephemeral):**
 - Implementer doesn't re-read files already explored in earlier tasks
@@ -244,7 +241,7 @@ Lead: Use superpowers:finishing-a-development-branch
 - Start implementation on main/master branch without explicit user consent
 - Skip reviews (spec compliance OR code quality)
 - Proceed with unfixed issues
-- Let Lead implement directly (must stay in delegate mode)
+- Let Lead implement directly (Lead coordinates only, teammates implement)
 - **Start code quality review before spec compliance is PASS** (wrong order)
 - Move to next task while either review has open issues
 - Assume teammates share context (they do NOT - send info via messages)
@@ -263,17 +260,13 @@ Lead: Use superpowers:finishing-a-development-branch
 - Repeat until approved
 - Don't skip the re-review
 
-## Integration
+## Prerequisites
 
-**Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- An implementation plan (written document with independent tasks)
+- A git worktree or feature branch for isolation (recommended)
 
-**Teammates should follow:**
-- **superpowers:test-driven-development** - Implementer follows TDD for each task
-- **superpowers:verification-before-completion** - Evidence before claims
+## Principles
 
-**Alternative workflows:**
-- **superpowers:subagent-driven-development** - Ephemeral subagent per task (fresh context, lower cost)
-- **superpowers:executing-plans** - Parallel session with human checkpoints
+- **TDD:** Implementer writes tests before implementation for each task
+- **Evidence before claims:** Teammates verify their work before reporting done
+- **Two-stage review:** Spec compliance first, code quality second — never skip either

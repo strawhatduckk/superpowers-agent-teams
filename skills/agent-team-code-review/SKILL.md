@@ -16,16 +16,11 @@ Request code review from a persistent reviewer teammate who accumulates context 
 ```dot
 digraph when_to_use {
     "Need code review?" [shape=diamond];
-    "Using Agent Teams?" [shape=diamond];
     "Reviewer teammate exists?" [shape=diamond];
     "agent-team-code-review" [shape=box];
-    "requesting-code-review (ephemeral)" [shape=box];
     "Spawn reviewer first" [shape=box];
 
-    "Need code review?" -> "Using Agent Teams?" [label="yes"];
-    "Need code review?" -> "requesting-code-review (ephemeral)" [label="no"];
-    "Using Agent Teams?" -> "Reviewer teammate exists?" [label="yes"];
-    "Using Agent Teams?" -> "requesting-code-review (ephemeral)" [label="no"];
+    "Need code review?" -> "Reviewer teammate exists?" [label="yes"];
     "Reviewer teammate exists?" -> "agent-team-code-review" [label="yes"];
     "Reviewer teammate exists?" -> "Spawn reviewer first" [label="no"];
     "Spawn reviewer first" -> "agent-team-code-review";
@@ -75,8 +70,8 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 ## What Persistent Review Adds
 
-| Aspect | Ephemeral (requesting-code-review) | Persistent (agent-team-code-review) |
-|--------|-------------------------------------|--------------------------------------|
+| Aspect | Ephemeral reviewer | Persistent reviewer (agent-team-code-review) |
+|--------|---------------------|----------------------------------------------|
 | Prior context | None | Accumulated across reviews |
 | Pattern detection | Single review only | Cross-task patterns |
 | Consistency | Each review independent | Consistent standards applied |
@@ -141,11 +136,8 @@ Reviewer: Approved.
 **Used by:**
 - **superpowers-t:agent-team-driven-development** - Review after each task
 
-**Pairs with:**
-- **superpowers:receiving-code-review** - How to handle feedback
-- **superpowers:verification-before-completion** - Verify before claiming done
-
-**Ephemeral alternative:**
-- **superpowers:requesting-code-review** - Use when Agent Teams is not enabled
+**Principles:**
+- Verify your work before claiming done — run tests, show evidence
+- When receiving feedback, evaluate technically before implementing — don't blindly agree
 
 See reviewer spawn template at: `agent-team-code-review/reviewer-spawn-prompt.md`

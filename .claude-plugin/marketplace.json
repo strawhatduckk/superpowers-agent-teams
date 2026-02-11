@@ -1,15 +1,15 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "superpowers-t",
-  "description": "Agent Teams addon for Superpowers",
+  "description": "Standalone skills library for Claude Code with Agent Teams support",
   "owner": {
     "name": "Kenny Pee"
   },
   "plugins": [
     {
       "name": "superpowers-t",
-      "description": "Agent Teams skills for Claude Code: persistent teammate orchestration with accumulated context",
-      "version": "0.1.0",
+      "description": "Standalone skills library for Claude Code with Agent Teams support: TDD, debugging, code review, planning, and persistent teammate orchestration",
+      "version": "0.2.0",
       "source": "./"
     }
   ]
