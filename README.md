@@ -95,7 +95,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 - **systematic-debugging** - 4-phase root cause process (includes root-cause-tracing, defense-in-depth, condition-based-waiting techniques)
 - **verification-before-completion** - Ensure it's actually fixed
 
-**Collaboration** 
+**Collaboration**
 - **brainstorming** - Socratic design refinement
 - **writing-plans** - Detailed implementation plans
 - **executing-plans** - Batch execution with checkpoints
@@ -105,6 +105,11 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 - **using-git-worktrees** - Parallel development branches
 - **finishing-a-development-branch** - Merge/PR decision workflow
 - **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
+
+**Agent Teams** (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)
+- **agent-team-driven-development** - Persistent implementer + two-stage review team with accumulated context across tasks
+- **dispatching-agent-teams** - Parallel teammates with cross-communication for overlapping concerns
+- **agent-team-code-review** - Persistent reviewer teammate that retains context across reviews
 
 **Meta**
 - **writing-skills** - Create new skills following best practices (includes testing methodology)
