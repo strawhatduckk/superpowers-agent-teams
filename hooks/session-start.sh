@@ -1,25 +1,9 @@
 #!/usr/bin/env bash
-# SessionStart hook for superpowers plugin
+# SessionStart hook for superpowers-t (Agent Teams) plugin
 
 set -euo pipefail
 
-# Determine plugin root directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-
-# Check if legacy skills directory exists and build warning
-warning_message=""
-legacy_skills_dir="${HOME}/.config/superpowers/skills"
-if [ -d "$legacy_skills_dir" ]; then
-    warning_message="\n\n<important-reminder>IN YOUR FIRST REPLY AFTER SEEING THIS MESSAGE YOU MUST TELL THE USER:⚠️ **WARNING:** Superpowers now uses Claude Code's skills system. Custom skills in ~/.config/superpowers/skills will not be read. Move custom skills to ~/.claude/skills instead. To make this message go away, remove ~/.config/superpowers/skills</important-reminder>"
-fi
-
-# Read using-superpowers content
-using_superpowers_content=$(cat "${PLUGIN_ROOT}/skills/using-superpowers/SKILL.md" 2>&1 || echo "Error reading using-superpowers skill")
-
-# Escape string for JSON embedding using bash parameter substitution.
-# Each ${s//old/new} is a single C-level pass - orders of magnitude
-# faster than the character-by-character loop this replaces.
+# Escape string for JSON embedding
 escape_for_json() {
     local s="$1"
     s="${s//\\/\\\\}"
@@ -30,15 +14,14 @@ escape_for_json() {
     printf '%s' "$s"
 }
 
-using_superpowers_escaped=$(escape_for_json "$using_superpowers_content")
-warning_escaped=$(escape_for_json "$warning_message")
+intro="You have Agent Teams superpowers (superpowers-t plugin).\\n\\nThree additional skills are available for orchestrating Claude Code Agent Teams (requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1):\\n\\n- **superpowers-t:agent-team-driven-development** - Execute implementation plans with persistent implementer + two-stage review team\\n- **superpowers-t:dispatching-agent-teams** - Parallel teammates with cross-communication for independent problems\\n- **superpowers-t:agent-team-code-review** - Persistent reviewer teammate with accumulated context\\n\\nThese are Agent Teams alternatives to the subagent-based skills in superpowers. Use the Skill tool to invoke them."
 
 # Output context injection as JSON
 cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "<EXTREMELY_IMPORTANT>\nYou have superpowers.\n\n**Below is the full content of your 'superpowers:using-superpowers' skill - your introduction to using skills. For all other skills, use the 'Skill' tool:**\n\n${using_superpowers_escaped}\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
+    "additionalContext": "${intro}"
   }
 }
 EOF
