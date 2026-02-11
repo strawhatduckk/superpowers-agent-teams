@@ -139,7 +139,7 @@ Reviewer: Approved.
 ## Integration
 
 **Used by:**
-- **superpowers:agent-team-driven-development** - Review after each task
+- **superpowers-t:agent-team-driven-development** - Review after each task
 
 **Pairs with:**
 - **superpowers:receiving-code-review** - How to handle feedback
